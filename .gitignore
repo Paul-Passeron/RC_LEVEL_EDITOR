@@ -1,1 +1,3 @@
 test.rcmap
+.gitignore
+pygame_test.py
