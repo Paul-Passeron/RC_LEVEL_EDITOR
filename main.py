@@ -88,11 +88,9 @@ def draw_line(i1, j1, i2, j2, color = GRID_COLOR):
 
 def draw_grid():
     for x in range(RES_X):
-        i = SCREEN_WIDTH*x/RES_X
-        pygame.draw.line(screen, GRID_COLOR, (i, 0), (i, SCREEN_HEIGHT), 2)
+        draw_line(x, 0, RES_X, 0)
     for y in range(RES_Y):
-        j = SCREEN_HEIGHT*y/RES_Y
-        pygame.draw.line(screen, GRID_COLOR, (0, j), (SCREEN_WIDTH, j), 2)
+        draw_line(0, y, 0, RES_Y)
     for x in range(RES_X):
         for y in range(RES_Y):
             j = SCREEN_HEIGHT*y/RES_Y+1
