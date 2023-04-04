@@ -2,7 +2,7 @@ import pygame
 from math import floor
 import sys
 from random import random
-
+from enum import IntEnum, auto
 """Structure of .rcmap files:
 
 #HEADBEGIN
@@ -24,26 +24,50 @@ This is a comment describing the map
 
 #Global viariables
 
-REG_STDOUT = sys.stdout
+REG_STDOUT        = sys.stdout
 
-RES_X = 12
-RES_Y = 12
+RES_X             = 12
+RES_Y             = 12
 
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH      = 600
+SCREEN_HEIGHT     = 600
 
-GRID_COLOR  = (255/2, 255/2, 255/2)
+GRID_COLOR        = (255/2, 255/2, 255/2)
 
-LINE_RED = (255*0.7, 0, 0)
+LINE_RED          = (255*0.7, 0, 0)
+
+SCALING_FACTOR    = 4
+
+AUTO_COUNTER      = 0
+
+CURRENT_TEXTURE   = 0
+
+class ObjectType (IntEnum):
+    Wall          = auto()
+    Item          = auto()
+    Player        = auto()
+    Collectible   = auto()
+
+class TextureType (IntEnum):
+    Stone         = 0
+    Hit           = 1
+    Blue_Stone    = 2
+    Player        = 3
+    Stone_Bird    = 4
+    Wood_Bird     = 5
+    Door_Ext      = 6
+    Door_Cen      = 7
+    Flag          = 8
+    Lamp          = 9
+    Mag           = 10
 
 
-TEXTURE_IDS = list(range(9))
+MAP = {}
+MAP[ObjectType.Wall]          = []
+MAP[ObjectType.Item]          = []
+MAP[ObjectType.Player]        = []
+MAP[ObjectType.Collectible]   = []
 
-text_id = 2
-
-wall_size = 1.0
-
-SCALING_FACTOR = 2
 
 def parse_list(lis, n=3):
     buffer = ""
@@ -57,24 +81,29 @@ def parse_list(lis, n=3):
             buffer+='\n'
     return buffer
 
-def create_rcmap_from_lists(filename, head, wall_list, item_list, player):
+
+def create_rcmap_from_dic(filename, dic):
     with open(filename, 'w') as f:
         sys.stdout = f
-        if len(head) > 0:
-            print("#HEADBEGIN")
-            print(head)
-            print("#HEADEND")
-        if len(wall_list) > 0:
-            print("#WBEGIN")
-            print(parse_list(wall_list))
-            print("#WEND")
-        if len(item_list) > 0:
-            print("#IBEGIN")
-            print(parse_list(item_list))
-            print("#IEND")
-        print("#PBEGIN")
-        print(str(player[0]) + " " + str(player[1]))
-        print("#PEND")
+        walls = dict[ObjectType.Wall]
+        if len(walls) > 0:
+            print("#WBEGIN\n", end = '')
+            print(parse_list(walls), end = '\n')
+            print("#WEND\n", end = '')
+        items = dict[ObjectType.Item]
+        if len(items) > 0:
+            print("IBEGIN\n", end = '')
+            print(parse_list(items), end = '\n')
+            print("IEND\n", end = '')
+        collectibles = dict[ObjectType.Collectible]
+        if len(collectibles) > 0:
+            print("CBEGIN\n", end = '')
+            print(parse_list(collectibles), end = '\n')
+            print("CEND\n", end = '')
+        player = dict[ObjectType.Player]
+        if len(player) == 3:
+            a, b, c = player
+            print(f"PBEGIN\n{a} {b} {c}\nPEND", end = "")
         f.close()
     sys.stdout = REG_STDOUT
 
@@ -145,7 +174,7 @@ while not done: #Program Loop
         CURRENT_LINE.append(i)
         CURRENT_LINE.append(j)
         CURRENT_LINE.append(1)
-        CURRENT_LINE.append(text_id)
+        CURRENT_LINE.append(CURRENT_TEXTURE)
         LINES.append(CURRENT_LINE)
 
     #Drawing lines
