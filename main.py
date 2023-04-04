@@ -1,4 +1,6 @@
-import pygame
+import contextlib
+with contextlib.redirect_stdout(None):
+    import pygame
 from math import floor
 import sys
 from random import random
@@ -16,7 +18,7 @@ This is a comment describing the map
 #WEND
 
 #IBEGIN #:Items
-<flaot px> <float py> <float size> <int textureIdentifire>
+<flaot px> <float py> <float size> <int textureIdentifier>
 #IEND
 
 #PBEGIN #: Player
@@ -198,7 +200,7 @@ while not done: #Program Loop
             create_rcmap_from_dic("test.rcmap", MAP)
             print("Map Saved!")
 
-        #Handling different mode 
+        #Handling switching between different editing modes 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
             CURRENT_MODE = ObjectType.Wall
             print("Wall mode")
